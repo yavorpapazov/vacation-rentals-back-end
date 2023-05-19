@@ -1,27 +1,27 @@
-let Item = require('../models/item')
+const Item = require('../models/item')
 
 async function getAll() {
-    let allBnbs = await Item.find({})
+    const allBnbs = await Item.find().lean()
     return allBnbs
 }
 
 async function getById(itemId) {
-    let bnb = await Item.find({ _id: itemId }).exec()
+    const bnb = await Item.findOne({ _id: itemId }).lean()
     return bnb
 }
 
 async function createItem(newItem) {
-    let bnb = await Item.create(newItem)
+    const bnb = await Item.create(newItem)
     return bnb
 }
 
 async function updateItem(itemId, item) {
-    let bnb = await Item.findOneAndUpdate({ _id: itemId }, item, { new: true })
+    const bnb = await Item.findOneAndUpdate({ _id: itemId }, item, { new: true })
     return bnb
 }
 
 async function deleteItem(itemId) {
-    let bnb = await Item.findOneAndDelete({ _id: itemId })
+    const bnb = await Item.findOneAndDelete({ _id: itemId })
     return bnb
 }
 

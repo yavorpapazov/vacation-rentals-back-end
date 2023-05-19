@@ -1,7 +1,7 @@
-let express = require('express')
-let server = express()
-let cors = require('cors')
-let routes = require('./routes')
+const express = require('express')
+const server = express()
+const cors = require('cors')
+const routes = require('./routes')
 
 server.use(express.json())
 server.use(cors())
