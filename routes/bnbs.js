@@ -1,57 +1,71 @@
 const express = require('express')
 const router = express.Router()
 const itemDAO = require('../daos/item')
-const multer = require('multer')
+// const multer = require('multer')
+// const fs = require('fs')
 
-const fileStorage = multer.diskStorage({
-    destination: 'uploads',
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '--' + file.originalname)
-    }
-})
+// const fileStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null,'uploads')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + '--' + file.originalname)
+//     }
+// })
 
-const upload = multer({ storage: fileStorage }).single('image')
+// const upload = multer({ storage: fileStorage })
 
 router.get('/', async (req, res) => {
     const result = await itemDAO.getAll()
-    res.status(200).json(result)
+    res.json(result)
 })
 
 router.get('/:id', async (req, res) => {
     const result = await itemDAO.getById(req.params.id)
-    res.status(200).json(result)
+    res.json(result)
+})
+//upload.single('image')
+router.post('/', async (req, res) => {
+    try {
+        const userInput = {
+            bnbCity: req.body.bnbCity,
+            bnbCost: req.body.bnbCost,
+            bnbCountry: req.body.bnbCountry,
+            bnbImage: req.body.bnbImage,
+            bnbTitle: req.body.bnbTitle
+        }
+        await itemDAO.createItem(userInput)
+        res.sendStatus(200)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
 })
 
-router.post('/', (req, res) => {
-    upload(req, res, async (err) => {
-        if (err) {
-            console.log(err)
-        } else {
-            const userInput = {
-                bnbCity: req.body.bnbCity,
-                bnbCost: req.body.bnbCost,
-                bnbCountry: req.body.bnbCost,
-                bnbImage: {
-                    data: req.file.filename,
-                    contentType: 'image/jpg'
-                },
-                bnbTitle: req.body.bnbTitle
-            }
-            const result = await itemDAO.createItem(userInput)
-            res.status(201).json(result)
-        }
-    })
-    //res.send('Successfully uploaded image!')
-})
+// router.post('/', upload.single('image'), async (req, res) => {
+//     console.log(req.body)
+//     console.log(req.file)
+//     const userInput = {
+//         bnbCity: req.body.bnbCity,
+//         bnbCost: req.body.bnbCost,
+//         bnbCountry: req.body.bnbCountry,
+//         bnbImage: {
+//             data: fs.readFileSync('uploads/' + req.file.filename),
+//             contentType: 'image/png'
+//         },
+//         bnbTitle: req.body.bnbTitle
+//     }
+//     const result = await itemDAO.createItem(userInput)
+//     res.json(result)
+// })
 
 router.put('/:id', async (req, res) => {
     const result = await itemDAO.updateItem(req.params.id, req.body)
-    res.status(200).json(result)
+    res.json(result)
 })
 
 router.delete('/:id', async (req, res) => {
     const result = await itemDAO.deleteItem(req.params.id)
-    res.status(200).json(result)
+    res.json(result)
 })
 
 router.all('*', (req, res) => {
