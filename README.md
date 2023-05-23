@@ -1,6 +1,12 @@
 # Vacation rentals back-end project
 
-## Technical components
+# Project description
+
+The purpose of this application is to create, display and remove vacation rental records. It provides routes for signup, login and logout. Regular users are able to create a record, retrieve any record and remove their own items. Admin users are able create, retrieve and remove any record. This will be handled by a simple authorization.
+
+The application will use the bcrypt library for securely storing passwords. Only authenticated users can access the protected API routes. Additionally, authentication is handled by generating random tokens with the use of the uuid library.
+
+# Technical components
 
 ## Routes
 
@@ -59,3 +65,10 @@ Cart
 -	User – fields: email and password. A user's email should not appear more than once in the collection
 -	Bnb – fields: city, cost, country, image, title and userId
 -	Token – fields: token and userId
+
+## Implementation plan
+
+-	Week May 22 – work on back-end application
+-	Week May 29 – work on back-end application
+-	Week June 5 – complete back-end project and front-end application used for testing and demonstration
+-	Week June 12 – work on testing files
