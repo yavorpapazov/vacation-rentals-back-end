@@ -1,8 +1,8 @@
-## Vacation rentals back-end project
+# Vacation rentals back-end project
 
 ## Technical components
 
-# Routes
+## Routes
 
 Login
 
@@ -24,12 +24,12 @@ Vacation rentals cart (requires authentication)
 -	Add a record to the cart for a particular user: POST /cart
 -	Remove a record from the cart for a particular user: DELETE /cart/:id
 
-# Middleware
+## Middleware
 
 -	isLoggedIn(req, res, next) – should check if the user has a valid token
 -	isAdmin – if the user making the request is not an admin it should respond with a 403 Forbidden error
 
-# DAOs
+## DAOs
 
 Token
 
@@ -54,7 +54,7 @@ Cart
 -	getCart(userId) - should get all cart items for userId
 -	removeFromCart(userId, bnbId) - should remove bnb item from cart for userId and bnbId
 
-# Models
+## Models
 
 -	User – fields: email and password. A user's email should not appear more than once in the collection
 -	Bnb – fields: city, cost, country, image, title and userId
