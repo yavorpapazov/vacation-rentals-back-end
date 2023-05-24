@@ -2,7 +2,7 @@
 
 # Project description
 
-The purpose of this application is to create, display and remove vacation rental records. It provides routes for signup, login and logout. Regular users are able to create a record, retrieve any record and remove their own items. Admin users are able create, retrieve and remove any record. This will be handled by a simple authorization. All users are able to add items to their vacation rentals cart, as well as display and remove them from there.
+The purpose of this application is to create, display and remove vacation rental records. It provides routes for signup, login and logout. Regular users are able to create a record, retrieve any record and remove their own items. Admin users are able create, retrieve and remove any record. This will be handled by a simple authorization. All users are able to add items to their vacation rentals cart, as well as display and remove them from there. All users can search through the vacation rentals in the database.
 
 The application will use the bcrypt library for securely storing passwords. Only authenticated users can access the protected API routes. Additionally, authentication is handled by generating random tokens with the use of the uuid library.
 
