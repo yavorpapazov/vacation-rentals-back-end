@@ -19,7 +19,8 @@ router.post('/', async (req, res) => {
             bnbCost: req.body.bnbCost,
             bnbCountry: req.body.bnbCountry,
             bnbImage: req.body.bnbImage,
-            bnbTitle: req.body.bnbTitle
+            bnbTitle: req.body.bnbTitle,
+            stars: req.body.stars
         }
         await itemDAO.createItem(userInput)
         res.sendStatus(200)
