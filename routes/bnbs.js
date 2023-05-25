@@ -22,8 +22,12 @@ router.post('/', async (req, res) => {
             bnbTitle: req.body.bnbTitle,
             stars: req.body.stars
         }
-        await itemDAO.createItem(userInput)
-        res.sendStatus(200)
+        const result = await itemDAO.createItem(userInput)
+        if (result) {
+            res.sendStatus(200)
+        } else {
+            res.sendStatus(401)
+        }
     } catch(e) {
         res.status(500).send(e.message)
     }
