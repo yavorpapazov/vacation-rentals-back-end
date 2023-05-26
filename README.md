@@ -64,6 +64,7 @@ Cart
 
 -	User – fields: email and password. A user's email should not appear more than once in the collection
 -	Bnb – fields: city, cost, country, image, title and userId
+-	Cart – fields: city, cost, country, image, title and userId
 -	Token – fields: token and userId
 
 ## Implementation plan

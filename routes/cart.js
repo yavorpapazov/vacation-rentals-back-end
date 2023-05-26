@@ -1,16 +1,16 @@
 const express = require('express')
 const router = express.Router()
-const itemDAO = require('../daos/item')
+const cartItemDAO = require('../daos/cartItem')
 
 router.get('/', async (req, res) => {
-    const result = await itemDAO.getAll()
+    const result = await cartItemDAO.getAll()
     res.json(result)
 })
 
-router.get('/:id', async (req, res) => {
-    const result = await itemDAO.getById(req.params.id)
-    res.json(result)
-})
+// router.get('/:id', async (req, res) => {
+//     const result = await itemDAO.getById(req.params.id)
+//     res.json(result)
+// })
 
 router.post('/', async (req, res) => {
     try {
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
             bnbTitle: req.body.bnbTitle,
             stars: req.body.stars
         }
-        const result = await itemDAO.createItem(userInput)
+        const result = await cartItemDAO.createItem(userInput)
         if (result) {
             res.sendStatus(200)
         } else {
@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const result = await itemDAO.deleteItem(req.params.id)
+    const result = await cartItemDAO.deleteItem(req.params.id)
     res.json(result)
 })
 

@@ -15,14 +15,9 @@ async function createItem(newItem) {
     return bnb
 }
 
-async function updateItem(itemId, item) {
-    const bnb = await Item.findOneAndUpdate({ _id: itemId }, item, { new: true })
-    return bnb
-}
-
 async function deleteItem(itemId) {
     const bnb = await Item.findOneAndDelete({ _id: itemId })
     return bnb
 }
 
-module.exports = { getAll, getById, createItem, updateItem, deleteItem }
+module.exports = { getAll, getById, createItem, deleteItem }
