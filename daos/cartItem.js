@@ -5,11 +5,6 @@ async function getAll() {
     return allBnbs
 }
 
-// async function getById(itemId) {
-//     const bnb = await CartItem.findOne({ _id: itemId }).lean()
-//     return bnb
-// }
-
 async function createItem(newItem) {
     const bnb = await CartItem.create(newItem)
     return bnb

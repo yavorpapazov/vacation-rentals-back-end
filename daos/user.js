@@ -33,11 +33,6 @@ module.exports.getUserIdFromToken = async (tokenString) => {
   }
 }
 
-module.exports.updateUserPassword = async (userId, password) => {
-  await User.updateOne({ _id: userId }, { password: password })
-  return true
-}
-
 module.exports.removeToken = async (tokenString) => {
   await Token.deleteOne({ token: tokenString })
   return true
