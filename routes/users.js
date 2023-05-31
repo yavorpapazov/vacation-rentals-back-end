@@ -42,7 +42,7 @@ router.post("/", async (req, res, next) => {
             res.status(401).send(e.message)
         }
     }
-});
+})
 
 router.use(async function (req, res, next) {
     if (!req.headers.authorization) {
