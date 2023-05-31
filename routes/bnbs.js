@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const itemDAO = require('../daos/item')
+const userDAO = require('../daos/user')
 
 router.get('/', async (req, res) => {
     const result = await itemDAO.getAll()
@@ -33,9 +34,10 @@ router.post('/', async (req, res) => {
             bnbCity: req.body.bnbCity,
             bnbCost: req.body.bnbCost,
             bnbCountry: req.body.bnbCountry,
-            bnbImage: req.body.bnbImage,
+            //bnbImage: req.body.bnbImage,
             bnbTitle: req.body.bnbTitle,
-            stars: req.body.stars
+            stars: req.body.stars,
+            userId: req.userId
         }
         const result = await itemDAO.createItem(userInput)
         if (result) {
