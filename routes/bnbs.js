@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const itemDAO = require('../daos/item')
 const userDAO = require('../daos/user')
+const cartItemDAO = require('../daos/cartItem')
 
 router.get('/', async (req, res) => {
     const result = await itemDAO.getAll()
@@ -53,8 +54,13 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     const item = await itemDAO.getById(req.params.id)
     if (req.userId.toString() === item.userId.toString()) {
-        const result = await itemDAO.deleteItem(req.params.id)
-        res.json(result)
+        const bnb = await cartItemDAO.getById(req.params.id)
+        if (bnb) {
+            res.send('Please remove item from cart.')
+        } else {
+            const result = await itemDAO.deleteItem(req.params.id)
+            res.json(result)
+        }
     } else {
         res.sendStatus(403)
     }

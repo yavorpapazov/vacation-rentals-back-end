@@ -7,6 +7,11 @@ async function getAll(userId) {
     return allBnbs
 }
 
+async function getById(bnbId) {
+    const bnb = (await CartItem.find({ bnbId }).lean())[0]
+    return bnb
+}
+
 async function createItem(newItem) {
     const bnb = await CartItem.create(newItem)
     return bnb
@@ -17,4 +22,4 @@ async function deleteItem(itemId) {
     return bnb
 }
 
-module.exports = { getAll, createItem, deleteItem }
+module.exports = { getAll, getById, createItem, deleteItem }

@@ -13,7 +13,7 @@ The application will use the bcrypt library for securely storing passwords. Only
 Login
 
 -	Signup: POST /login/signup – use bcrypt on the incoming password. Store user with their email and encrypted password, handle conflicts when the email is already in use
--	Login: POST /login – find the user with the provided email. Use bcrypt to compare stored password with the incoming password. If they match, generate a random token with uuid and return it to the user.
+-	Login: POST /login – find the user with the provided email. Use bcrypt to compare stored password with the incoming password. If they match, generate a random token with uuid and return it to the user
 -	Logout: POST /login/logout – If the user is logged in, invalidate their token so they can't use it again
 
 Bnbs (requires authentication)
@@ -22,7 +22,7 @@ Bnbs (requires authentication)
 -	Get specific bnb: GET /bnbs/:id (doesn’t require authentication)
 -	Search bnbs: GET /bnbs/search
 -	Create a bnb record: POST /bnbs
--	Remove a bnb record: DELETE /bnbs/:id – regular users can only delete their own records. Users with the "admin" role can remove any record
+-	Remove a bnb record: DELETE /bnbs/:id – regular users can only delete their own records. Users with the "admin" role can remove any record. A record can be removed only if it is not in the user’s cart
 
 Vacation rentals cart (requires authentication)
 
