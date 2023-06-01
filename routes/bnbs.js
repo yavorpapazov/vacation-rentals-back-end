@@ -51,8 +51,13 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const result = await itemDAO.deleteItem(req.params.id)
-    res.json(result)
+    const item = await itemDAO.getById(req.params.id)
+    if (req.userId.toString() === item.userId.toString()) {
+        const result = await itemDAO.deleteItem(req.params.id)
+        res.json(result)
+    } else {
+        res.sendStatus(403)
+    }
 })
 
 router.all('*', (req, res) => {

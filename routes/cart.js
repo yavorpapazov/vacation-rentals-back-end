@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const cartItemDAO = require('../daos/cartItem')
 const userDAO = require('../daos/user')
+const itemDAO = require('../daos/item')
 
 router.use(async function (req, res, next) {
     if (!req.headers.authorization) {
@@ -25,17 +26,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const userInput = {
-            addedToCart: req.userId,
-            bnbCity: req.body.bnbCity,
-            bnbCost: req.body.bnbCost,
-            bnbCountry: req.body.bnbCountry,
-            //bnbImage: req.body.bnbImage,
-            bnbTitle: req.body.bnbTitle,
-            stars: req.body.stars,
-            userId: req.body.userId
-        }
-        const result = await cartItemDAO.createItem(userInput)
+        const itemId = req.body.itemId
+        const item = await itemDAO.getByIdProject(itemId)
+        const cartItem = {...item, addedToCart: req.userId}
+        const result = await cartItemDAO.createItem(cartItem)
         if (result) {
             res.sendStatus(200)
         } else {
