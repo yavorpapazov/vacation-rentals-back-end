@@ -1,7 +1,9 @@
 const CartItem = require('../models/cartItem')
 
-async function getAll() {
-    const allBnbs = await CartItem.find().lean()
+module.exports = {}
+
+async function getAll(userId) {
+    const allBnbs = await CartItem.find({ addedToCart: userId }).lean()
     return allBnbs
 }
 

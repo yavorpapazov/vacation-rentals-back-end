@@ -1,5 +1,7 @@
 const Item = require('../models/item')
 
+module.exports = {}
+
 async function getAll() {
     const allBnbs = await Item.find().lean()
     return allBnbs
