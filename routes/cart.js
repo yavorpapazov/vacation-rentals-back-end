@@ -45,8 +45,4 @@ router.delete('/:id', async (req, res) => {
     res.json(result)
 })
 
-router.all('*', (req, res) => {
-    res.status(404).send('Resource not found')
-})
-
 module.exports = router

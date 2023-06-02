@@ -20,6 +20,8 @@ router.use(async function (req, res, next) {
     } else {
         const tokenString = req.headers.authorization.slice(7)
         const userId = await userDAO.getUserIdFromToken(tokenString)
+        const userData = await userDAO.getUserById(userId)
+        console.log(userData)
         if (userId) {
             req.userId = userId
             next()
@@ -51,6 +53,14 @@ router.post('/', async (req, res) => {
     }
 })
 
+// router.use(function (req, res, next) {
+//     if (req.userData.roles.includes('admin')) {
+//         next()
+//     } else {
+//         res.sendStatus(403)
+//     }
+// })
+
 router.delete('/:id', async (req, res) => {
     const item = await itemDAO.getById(req.params.id)
     if (req.userId.toString() === item.userId.toString()) {
@@ -64,10 +74,6 @@ router.delete('/:id', async (req, res) => {
     } else {
         res.sendStatus(403)
     }
-})
-
-router.all('*', (req, res) => {
-    res.status(404).send('Resource not found')
 })
 
 module.exports = router

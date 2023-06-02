@@ -18,6 +18,11 @@ module.exports.getUser = async (userEmail) => {
   return user
 }
 
+module.exports.getUserById = async (userId) => {
+  const user = await User.findOne({ _id: userId }).lean()
+  return user
+}
+
 module.exports.makeTokenForUserId = async (userId) => {
   const token = uuid.v4();
   const created = await Token.create({ userId, token })

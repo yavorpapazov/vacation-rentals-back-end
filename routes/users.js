@@ -11,7 +11,8 @@ router.post("/signup", async (req, res, next) => {
             const hashedPassword = await bcrypt.hash(req.body.password, 10)
             const user = {
                 email: req.body.email,
-                password: hashedPassword
+                password: hashedPassword,
+                roles: ['user']
             };
             const savedUser = await userDAO.createUser(user, user.email)
             if (savedUser === 'exists') {
