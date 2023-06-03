@@ -1,5 +1,13 @@
 # Vacation rentals back-end project
 
+Work still needs to be done:
+
+-	Bnbs search route
+-	Test files
+-	I would like to complete my front-end app for testing and demonstration as well
+
+Everything else below has been completed.
+
 # Project description
 
 The purpose of this application is to create, display and remove vacation rental records. It provides routes for signup, login and logout. Regular users are able to create a record, retrieve any record and remove their own items. Admin users are able create, retrieve and remove any record. This will be handled by a simple authorization. All users are able to add items to their vacation rentals cart, as well as display and remove them from there. All users can search through the vacation rentals in the database.
