@@ -3,6 +3,16 @@ const mongoose = require('mongoose')
 
 module.exports = {}
 
+async function getSearch(query) { 
+    if (query) {
+      return await Item.find({ 
+        $text: { $search: query } },
+        { score: { $meta: 'textScore'}}
+      ).sort({ score: { $meta: 'textScore'}}).lean()
+    }
+    return await Item.find().lean()
+}
+
 async function getAll() {
     const allBnbs = await Item.find().lean()
     return allBnbs
@@ -31,4 +41,4 @@ async function deleteItem(itemId) {
     return bnb
 }
 
-module.exports = { getAll, getById, getByIdProject, createItem, deleteItem }
+module.exports = { getAll, getById, getSearch, getByIdProject, createItem, deleteItem }

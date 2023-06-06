@@ -10,4 +10,6 @@ const itemSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true }
 })
 
+itemSchema.index({ bnbCity: 'text', bnbCountry: 'text', bnbTitle: 'text' })
+
 module.exports = mongoose.model('items', itemSchema)

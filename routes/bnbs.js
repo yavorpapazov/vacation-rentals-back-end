@@ -4,6 +4,12 @@ const itemDAO = require('../daos/item')
 const userDAO = require('../daos/user')
 const cartItemDAO = require('../daos/cartItem')
 
+router.get("/search", async (req, res) => {
+    const { query } = req.query
+    const items = await itemDAO.getSearch(query)
+    res.json(items)
+})
+
 router.get('/', async (req, res) => {
     const result = await itemDAO.getAll()
     res.json(result)
