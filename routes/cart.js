@@ -20,8 +20,12 @@ router.use(async function (req, res, next) {
 })
 
 router.get('/', async (req, res) => {
-    const result = await cartItemDAO.getAll(req.userId)
-    res.json(result)
+    try {
+        const result = await cartItemDAO.getAll(req.userId)
+        res.json(result)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
 })
 
 router.post('/', async (req, res) => {
@@ -41,8 +45,12 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const result = await cartItemDAO.deleteItem(req.params.id)
-    res.json(result)
+    try {
+        const result = await cartItemDAO.deleteItem(req.params.id)
+        res.json(result)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }  
 })
 
 module.exports = router

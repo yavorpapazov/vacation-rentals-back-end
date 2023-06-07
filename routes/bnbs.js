@@ -5,19 +5,31 @@ const userDAO = require('../daos/user')
 const cartItemDAO = require('../daos/cartItem')
 
 router.get("/search", async (req, res) => {
-    const { query } = req.query
-    const items = await itemDAO.getSearch(query)
-    res.json(items)
+    try {
+        const { query } = req.query
+        const items = await itemDAO.getSearch(query)
+        res.json(items)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
 })
 
 router.get('/', async (req, res) => {
-    const result = await itemDAO.getAll()
-    res.json(result)
+    try {
+        const result = await itemDAO.getAll()
+        res.json(result)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
 })
 
 router.get('/:id', async (req, res) => {
-    const result = await itemDAO.getById(req.params.id)
-    res.json(result)
+    try {
+        const result = await itemDAO.getById(req.params.id)
+        res.json(result)
+    } catch(e) {
+        res.status(500).send(e.message)
+    }
 })
 
 router.use(async function (req, res, next) {
@@ -59,25 +71,29 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    const item = await itemDAO.getById(req.params.id)
-    if (req.userData._id.toString() === item.userId.toString()) {
-        const bnb = await cartItemDAO.getById(req.params.id)
-        if (bnb) {
-            res.send('Please remove item from cart.')
+    try {
+        const item = await itemDAO.getById(req.params.id)
+        if (req.userData._id.toString() === item.userId.toString()) {
+            const bnb = await cartItemDAO.getById(req.params.id)
+            if (bnb) {
+                res.send('Please remove item from cart.')
+            } else {
+                const result = await itemDAO.deleteItem(req.params.id)
+                res.json(result)
+            }
+        } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
+            const bnb = await cartItemDAO.getById(req.params.id)
+            if (bnb) {
+                res.send('Please remove item from cart.')
+            } else {
+                const result = await itemDAO.deleteItem(req.params.id)
+                res.json(result)
+            }
         } else {
-            const result = await itemDAO.deleteItem(req.params.id)
-            res.json(result)
+            res.sendStatus(403)
         }
-    } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
-        const bnb = await cartItemDAO.getById(req.params.id)
-        if (bnb) {
-            res.send('Please remove item from cart.')
-        } else {
-            const result = await itemDAO.deleteItem(req.params.id)
-            res.json(result)
-        }
-    } else {
-        res.sendStatus(403)
+    } catch(e) {
+        res.status(500).send(e.message)
     }
 })
 
