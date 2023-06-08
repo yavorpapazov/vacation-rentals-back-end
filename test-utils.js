@@ -1,14 +1,10 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-
 const mongoose = require('mongoose');
 const models = [require('./models/user')];
 
 module.exports = {};
 
 module.exports.connectDB = async () => {
-  await mongoose.connect(process.env.MONGO_URL, {});
+  await mongoose.connect('mongodb://127.0.0.1/vacationRentals', {});
   await Promise.all(models.map(m => m.syncIndexes()));
 }
 
