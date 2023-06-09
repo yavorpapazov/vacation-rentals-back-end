@@ -26,8 +26,13 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const result = await itemDAO.getById(req.params.id)
-        res.json(result)
+        if (result) {
+            res.json(result)
+        } else {
+            res.sendStatus(404)
+        }
     } catch(e) {
+        console.log(e.message)
         res.status(500).send(e.message)
     }
 })

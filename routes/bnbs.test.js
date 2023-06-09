@@ -60,14 +60,14 @@ describe("/bnbs", () => {
         ...user.toObject(),
         _id: user._id.toString()
       }));
-      console.log(savedUsers)
+      //console.log(savedUsers)
       testBnbs[0].userId = savedUsers[0]._id
       testBnbs[1].userId = savedUsers[1]._id
       const savedBnbs = await Item.insertMany(testBnbs);
       testBnbs.forEach((item, index) => {
         item._id = savedBnbs[index]._id.toString();
       });
-      console.log(testBnbs)
+      //console.log(testBnbs)
     });
     afterEach(testUtils.clearDB);
 
@@ -80,6 +80,19 @@ describe("/bnbs", () => {
             expect.objectContaining(item)
           )
         })
+      });
+    });
+
+    describe("GET /:id", () => {
+      it("should return 404 if no matching id", async () => {
+        const res = await request(server).get("/bnbs/id1");
+        expect(res.statusCode).toEqual(404);
+      });
+  
+      it.each(testBnbs)("should find a single bnb item and return 200", async (item) => {
+        const res = await request(server).get("/bnbs/" + item._id);
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject(item);
       });
     });
     // describe('Before login', () => {
@@ -96,12 +109,6 @@ describe("/bnbs", () => {
     //       expect(res.statusCode).toEqual(401);
     //     });
     //   });
-    //   describe('GET /', () => {
-    //     it('should get all bnb items and send 200', async () => {
-    //       const res = await request(server).get("/bnbs").send(item);
-    //       expect(res.statusCode).toEqual(200);
-    //     });
-    //   });
     //   describe('GET /:id', () => {
     //     let bnbs;
     //     beforeEach(async () => {
@@ -110,7 +117,6 @@ describe("/bnbs", () => {
     //         (await request(server).post("/bnbs").set('Authorization', 'Bearer ' + token0).send(item2)).body,
     //       ];
     //     });
-    //     console.log(bnbs)
     //     it.each([0, 1])('should get a single bnb item and send 200', async (index) => {
     //         const item = bnbs[index];
     //         const res = await request(server)
