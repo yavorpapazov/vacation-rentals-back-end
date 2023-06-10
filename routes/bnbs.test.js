@@ -42,16 +42,14 @@ describe("/bnbs", () => {
         bnbCost: 141,
         bnbCountry: 'USA',
         bnbTitle: 'Vacation US',
-        stars: 4.5,
-        userId: '123'
+        stars: 4.5
       },
       {
         bnbCity: 'NY',
         bnbCost: 111,
         bnbCountry: 'USA',
         bnbTitle: 'Vacation US',
-        stars: 4.5,
-        userId: '124'
+        stars: 4.5
       }
     ]
     beforeEach(async () => {
@@ -85,7 +83,8 @@ describe("/bnbs", () => {
 
     describe("GET /:id", () => {
       it("should return 404 if no matching id", async () => {
-        const res = await request(server).get("/bnbs/id1");
+        console.log(testBnbs)
+        const res = await request(server).get("/bnbs/123");
         expect(res.statusCode).toEqual(404);
       });
   
@@ -95,40 +94,19 @@ describe("/bnbs", () => {
         expect(res.body).toMatchObject(item);
       });
     });
-    // describe('Before login', () => {
-    //   describe('POST /', () => {
-    //     it('should send 401 without a token', async () => {
-    //       const res = await request(server).post("/bnbs").send(item);
-    //       expect(res.statusCode).toEqual(401);
-    //     });
-    //     it('should send 401 with a bad token', async () => {
-    //       const res = await request(server)
-    //         .post("/bnbs")
-    //         .set('Authorization', 'Bearer BAD')
-    //         .send(item);
-    //       expect(res.statusCode).toEqual(401);
-    //     });
-    //   });
-    //   describe('GET /:id', () => {
-    //     let bnbs;
-    //     beforeEach(async () => {
-    //       bnbs = [
-    //         (await request(server).post("/bnbs").set('Authorization', 'Bearer ' + token0).send(item)).body,
-    //         (await request(server).post("/bnbs").set('Authorization', 'Bearer ' + token0).send(item2)).body,
-    //       ];
-    //     });
-    //     it.each([0, 1])('should get a single bnb item and send 200', async (index) => {
-    //         const item = bnbs[index];
-    //         const res = await request(server)
-    //           .get("/bnbs/" + item._id)
-    //           .send();
-    //         expect(res.statusCode).toEqual(200);
-    //         expect(res.body).toEqual(item);
-    //     });
-    //     // it('should get a single bnb item and send 200', async () => {
-    //     //   const res = await request(server).get("/bnbs").send(item);
-    //     //   expect(res.statusCode).toEqual(200);
-    //     // });
-    //   });
-    //});
+    describe('Before login', () => {
+      describe('POST /', () => {
+        it('should send 401 without a token', async () => {
+          const res = await request(server).post("/bnbs").send(item);
+          expect(res.statusCode).toEqual(401);
+        });
+        it('should send 401 with a bad token', async () => {
+          const res = await request(server)
+            .post("/bnbs")
+            .set('Authorization', 'Bearer BAD')
+            .send(item);
+          expect(res.statusCode).toEqual(401);
+        });
+      });
+    });
 });

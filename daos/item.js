@@ -19,6 +19,9 @@ async function getAll() {
 }
 
 async function getById(itemId) {
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+        return null
+    }
     const bnb = await Item.findOne({ _id: itemId }).lean()
     return bnb
 }
@@ -27,7 +30,7 @@ async function getByIdProject(itemId) {
     const bnb = (await Item.aggregate([
         { $match: { _id: new mongoose.Types.ObjectId(itemId) } },
         { $project: { _id: 0, bnbId: "$_id", bnbCity: 1, bnbCost: 1, bnbCountry: 1, bnbTitle: 1, stars: 1, userId: 1 } }
-      ]))[0]
+    ]))[0]
     return bnb
 }
 

@@ -32,7 +32,6 @@ router.get('/:id', async (req, res) => {
             res.sendStatus(404)
         }
     } catch(e) {
-        console.log(e.message)
         res.status(500).send(e.message)
     }
 })
