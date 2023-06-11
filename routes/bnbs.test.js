@@ -53,48 +53,23 @@ describe("/bnbs", () => {
         stars: 4.5
       }
     ]
-    beforeEach(async () => {
-      savedUsers = await User.insertMany(testUsers);
-      savedUsers = savedUsers.map(user => ({
-        ...user.toObject(),
-        _id: user._id.toString()
-      }));
-      //console.log(savedUsers)
-      testBnbs[0].userId = savedUsers[0]._id
-      testBnbs[1].userId = savedUsers[1]._id
-      const savedBnbs = await Item.insertMany(testBnbs);
-      testBnbs.forEach((item, index) => {
-        item._id = savedBnbs[index]._id.toString();
-      });
-      //console.log(testBnbs)
-    });
-
-    describe("GET /", () => {
-      it("should return all bnb items", async () => {
-        const res = await request(server).get("/bnbs");
-        expect(res.statusCode).toEqual(200);
-        testBnbs.forEach(item => {
-          expect(res.body).toContainEqual(
-            expect.objectContaining(item)
-          )
-        })
-      });
-    });
-
-    describe("GET /:id", () => {
-      it("should return 404 if no matching id", async () => {
-        const res = await request(server).get("/bnbs/123");
-        expect(res.statusCode).toEqual(404);
-      });
-  
-      it.each(testBnbs)("should find a single bnb item and return 200", async (item) => {
-        const res = await request(server).get("/bnbs/" + item._id);
-        expect(res.statusCode).toEqual(200);
-        expect(res.body).toMatchObject(item);
-      });
-    });
-
     describe('Before login', () => {
+      beforeEach(async () => {
+        savedUsers = await User.insertMany(testUsers);
+        savedUsers = savedUsers.map(user => ({
+          ...user.toObject(),
+          _id: user._id.toString()
+        }));
+        //console.log(savedUsers)
+        testBnbs[0].userId = savedUsers[0]._id
+        testBnbs[1].userId = savedUsers[1]._id
+        const savedBnbs = await Item.insertMany(testBnbs);
+        testBnbs.forEach((item, index) => {
+          item._id = savedBnbs[index]._id.toString();
+        });
+        //console.log(testBnbs)
+      });
+
       describe('POST /', () => {
         it('should send 401 without a token', async () => {
           const res = await request(server).post("/bnbs").send(item);
@@ -108,15 +83,40 @@ describe("/bnbs", () => {
           expect(res.statusCode).toEqual(401);
         });
       });
+
+      describe("GET /", () => {
+        it("should return all bnb items", async () => {
+          const res = await request(server).get("/bnbs");
+          expect(res.statusCode).toEqual(200);
+          testBnbs.forEach(item => {
+            expect(res.body).toContainEqual(
+              expect.objectContaining(item)
+            )
+          })
+        });
+      });
+  
+      describe("GET /:id", () => {
+        it("should return 404 if no matching id", async () => {
+          const res = await request(server).get("/bnbs/123");
+          expect(res.statusCode).toEqual(404);
+        });
+    
+        it.each(testBnbs)("should find a single bnb item and return 200", async (item) => {
+          const res = await request(server).get("/bnbs/" + item._id);
+          expect(res.statusCode).toEqual(200);
+          expect(res.body).toMatchObject(item);
+        });
+      });
     });
     describe('after login', () => {
       const user0 = {
-        email: 'user0@mail.com',
-        password: '123password'
+        email: 'user1@yahoo.com',
+        password: 'user123'
       };
       const user1 = {
-        email: 'user1@mail.com',
-        password: '456password'
+        email: 'user2@yahoo.com',
+        password: 'user234'
       }
       let token0;
       let token1;
@@ -132,15 +132,13 @@ describe("/bnbs", () => {
       });
       describe('POST /', () => {
         it('should send 200', async () => {
-          let testBnb0 = {...testBnbs[0]}
-          delete testBnb0._id
-          console.log(testBnb0)
+          console.log(item)
           const res = await request(server)
             .post("/bnbs")
             .set('Authorization', 'Bearer ' + token0)
-            .send(testBnb0);
+            .send(item);
           expect(res.statusCode).toEqual(200);
-          expect(res.body).toMatchObject(testBnb0)
+          expect(res.body).toMatchObject(item)
         });
       //   it('should store note with userId', async () => {
       //     await request(server)
