@@ -75,29 +75,33 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    try {
-        const item = await itemDAO.getById(req.params.id)
-        if (req.userData._id.toString() === item.userId.toString()) {
-            const bnb = await cartItemDAO.getById(req.params.id)
-            if (bnb) {
-                res.send('Please remove item from cart.')
+    const item = await itemDAO.getById(req.params.id)
+    if (!item) {
+        res.sendStatus(400);
+    } else {
+        try {
+            if (req.userData._id.toString() === item.userId.toString()) {
+                const bnb = await cartItemDAO.getById(req.params.id)
+                if (bnb) {
+                    res.send('Please remove item from cart.')
+                } else {
+                    const result = await itemDAO.deleteItem(req.params.id)
+                    res.json(result)
+                }
+            } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
+                const bnb = await cartItemDAO.getById(req.params.id)
+                if (bnb) {
+                    res.send('Please remove item from cart.')
+                } else {
+                    const result = await itemDAO.deleteItem(req.params.id)
+                    res.json(result)
+                }
             } else {
-                const result = await itemDAO.deleteItem(req.params.id)
-                res.json(result)
+                res.sendStatus(403)
             }
-        } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
-            const bnb = await cartItemDAO.getById(req.params.id)
-            if (bnb) {
-                res.send('Please remove item from cart.')
-            } else {
-                const result = await itemDAO.deleteItem(req.params.id)
-                res.json(result)
-            }
-        } else {
-            res.sendStatus(403)
+        } catch(e) {
+            res.status(500).send(e.message)
         }
-    } catch(e) {
-        res.status(500).send(e.message)
     }
 })
 

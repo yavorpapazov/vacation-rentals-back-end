@@ -5,6 +5,7 @@ const testUtils = require('../test-utils');
 
 const User = require('../models/user');
 const Item = require('../models/item');
+const Token = require('../models/token');
 
 describe("/bnbs", () => {
     beforeAll(testUtils.connectDB);
@@ -20,7 +21,7 @@ describe("/bnbs", () => {
     }
     const item2 = {
         bnbCity: 'Denver',
-        bnbCost: 130,
+        bnbCost: 141,
         bnbCountry: 'USA',
         bnbTitle: 'Vacation US',
         stars: 4.5
@@ -51,7 +52,22 @@ describe("/bnbs", () => {
         stars: 4.5
       }
     ]
-
+    const testBnbs2 = [
+      {
+        bnbCity: 'Denver',
+        bnbCost: 141,
+        bnbCountry: 'USA',
+        bnbTitle: 'Vacation US',
+        stars: 4.5
+      },
+      {
+        bnbCity: 'Yellowstone',
+        bnbCost: 111,
+        bnbCountry: 'USA',
+        bnbTitle: 'Vacation US',
+        stars: 4.5
+      }
+    ]
     describe('Before login', () => {
       beforeEach(async () => {
         let savedUsers = await User.insertMany(testUsers);
@@ -68,7 +84,6 @@ describe("/bnbs", () => {
         });
         //console.log(testBnbs)
       });
-
       describe('POST /', () => {
         it('should send 401 without a token', async () => {
           const res = await request(server).post("/bnbs").send(item);
@@ -134,9 +149,17 @@ describe("/bnbs", () => {
         await request(server).post("/login/signup").send(user0);
         const res0 = await request(server).post("/login").send(user0);
         token0 = res0.body.token;
-        // const resUser1 = await request(server).post("/login/signup").send(user1);
-        // const res1 = await request(server).post("/login").send(user1);
-        // token1 = res1.body.token;
+        const user0TokenRecord = await Token.findOne({ token: token0 }).lean();
+        await request(server).post("/login/signup").send(user1);
+        const res1 = await request(server).post("/login").send(user1);
+        token1 = res1.body.token;
+        const user1TokenRecord = await Token.findOne({ token: token1 }).lean();
+        testBnbs2[0].userId = user0TokenRecord.userId.toString();
+        testBnbs2[1].userId = user1TokenRecord.userId.toString();
+        const savedBnbs2 = await Item.insertMany(testBnbs2);
+        testBnbs2.forEach((item, index) => {
+          item._id = savedBnbs2[index]._id.toString();
+        });
       });
 
       describe('POST /', () => {
@@ -144,18 +167,39 @@ describe("/bnbs", () => {
           const res = await request(server)
             .post("/bnbs")
             .set('Authorization', 'Bearer ' + token0)
-            .send(item);
+            .send(item2);
           expect(res.statusCode).toEqual(200);
-          expect(res.body).toMatchObject(item)
+          expect(res.body).toMatchObject(item2)
         });
         it('should store bnb item with userId', async () => {
           await request(server)
             .post("/bnbs")
             .set('Authorization', 'Bearer ' + token0)
-            .send(item);
-          const user = await User.findOne({email: user0.email}).lean();
+            .send(item2);
+          const user = await User.findOne({ email: user0.email }).lean();
           const savedItem = await Item.findOne({ userId: user._id }).lean();
-          expect(savedItem).toMatchObject(item);
+          expect(savedItem).toMatchObject(item2);
+        });
+      });
+
+      describe("DELETE /:id", () => {
+        it("should reject a bad id", async () => {
+          const res = await request(server)
+            .delete("/bnbs/fake")
+            .set('Authorization', 'Bearer ' + token0)
+            .send();
+          expect(res.statusCode).toEqual(400);
+        });
+        
+        it("should delete the expected bnb item", async () => {
+          const { _id } = testBnbs2[0];
+          const res = await request(server)
+            .delete("/bnbs/" + _id)
+            .set('Authorization', 'Bearer ' + token0)
+            .send({});
+          expect(res.statusCode).toEqual(200);
+          const storedBndItem = await Item.findOne({ _id });
+          expect(storedBndItem).toBeNull();
         });
       });
     });
