@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
         }
         const result = await itemDAO.createItem(userInput)
         if (result) {
-            res.sendStatus(200)
+            res.json(result)
         } else {
             res.sendStatus(401)
         }

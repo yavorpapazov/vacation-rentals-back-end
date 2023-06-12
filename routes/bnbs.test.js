@@ -51,6 +51,7 @@ describe("/bnbs", () => {
         stars: 4.5
       }
     ]
+
     describe('Before login', () => {
       beforeEach(async () => {
         let savedUsers = await User.insertMany(testUsers);
@@ -67,6 +68,7 @@ describe("/bnbs", () => {
         });
         //console.log(testBnbs)
       });
+
       describe('POST /', () => {
         it('should send 401 without a token', async () => {
           const res = await request(server).post("/bnbs").send(item);
@@ -78,6 +80,17 @@ describe("/bnbs", () => {
             .set('Authorization', 'Bearer BAD')
             .send(item);
           expect(res.statusCode).toEqual(401);
+        });
+      });
+
+      describe("GET /search", () => {
+        it("should return one matching bnb item", async () => {
+          const searchTerm = 'Rainier'
+          const res = await request(server).get("/bnbs/search?query=" + encodeURI(searchTerm));
+          expect(res.statusCode).toEqual(200);
+          expect(res.body).toMatchObject([
+            testBnbs.find(item => item.bnbCity === 'Rainier')
+          ]);
         });
       });
 
@@ -98,7 +111,6 @@ describe("/bnbs", () => {
           const res = await request(server).get("/bnbs/123");
           expect(res.statusCode).toEqual(404);
         });
-    
         it.each(testBnbs)("should find a single bnb item and return 200", async (item) => {
           const res = await request(server).get("/bnbs/" + item._id);
           expect(res.statusCode).toEqual(200);
@@ -106,6 +118,7 @@ describe("/bnbs", () => {
         });
       });
     });
+
     describe('after login', () => {
       const user0 = {
         email: 'user1@yahoo.com',
@@ -118,47 +131,32 @@ describe("/bnbs", () => {
       let token0;
       let token1;
       beforeEach(async () => {
-        const resUser0 = await request(server).post("/login/signup").send(user0);
-        console.log(resUser0.body)
-        testBnbs[0].userId = resUser0.body._id
-        delete testBnbs[0]._id
+        await request(server).post("/login/signup").send(user0);
         const res0 = await request(server).post("/login").send(user0);
         token0 = res0.body.token;
         // const resUser1 = await request(server).post("/login/signup").send(user1);
-        // console.log(resUser1.body)
         // const res1 = await request(server).post("/login").send(user1);
         // token1 = res1.body.token;
-        console.log(token0)
-        // console.log(token1)
       });
+
       describe('POST /', () => {
         it('should send 200', async () => {
-          console.log(testBnbs[0])
           const res = await request(server)
             .post("/bnbs")
             .set('Authorization', 'Bearer ' + token0)
-            .send(testBnbs[0]);
+            .send(item);
           expect(res.statusCode).toEqual(200);
-          expect(res.body).toMatchObject(testBnbs[0])
+          expect(res.body).toMatchObject(item)
         });
-      //   it('should store note with userId', async () => {
-      //     await request(server)
-      //       .post("/notes")
-      //       .set('Authorization', 'Bearer ' + token0)
-      //       .send(note);
-      //     const user = await User.findOne({email: user0.email}).lean();
-      //     const savedNote = await Note.findOne({ userId: user._id }).lean();
-      //     expect(savedNote).toMatchObject(note);
-      //   });
-      //   it('should store note with userId for user1', async () => {
-      //     await request(server)
-      //       .post("/notes")
-      //       .set('Authorization', 'Bearer ' + token1)
-      //       .send(note2);
-      //     const user = await User.findOne({email: user1.email}).lean();
-      //     const savedNote = await Note.findOne({ userId: user._id }).lean();
-      //     expect(savedNote).toMatchObject(note2);
-      //   });
+        it('should store bnb item with userId', async () => {
+          await request(server)
+            .post("/bnbs")
+            .set('Authorization', 'Bearer ' + token0)
+            .send(item);
+          const user = await User.findOne({email: user0.email}).lean();
+          const savedItem = await Item.findOne({ userId: user._id }).lean();
+          expect(savedItem).toMatchObject(item);
+        });
       });
     });
 });

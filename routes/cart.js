@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
         const cartItem = {...item, addedToCart: req.userId}
         const result = await cartItemDAO.createItem(cartItem)
         if (result) {
-            res.sendStatus(200)
+            res.json(result)
         } else {
             res.sendStatus(401)
         }
