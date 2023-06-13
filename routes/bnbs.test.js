@@ -26,6 +26,13 @@ describe("/bnbs", () => {
         bnbTitle: 'Vacation US',
         stars: 4.5
     }
+    const item3 = {
+      bnbCity: 'Yellowstone',
+      bnbCost: 111,
+      bnbCountry: 'USA',
+      bnbTitle: 'Vacation US',
+      stars: 4.5
+    }
     const testUsers = [
       {
         email: 'user1@yahoo.com',
@@ -75,14 +82,12 @@ describe("/bnbs", () => {
           ...user.toObject(),
           _id: user._id.toString()
         }));
-        //console.log(savedUsers)
         testBnbs[0].userId = savedUsers[0]._id
         testBnbs[1].userId = savedUsers[1]._id
         const savedBnbs = await Item.insertMany(testBnbs);
         testBnbs.forEach((item, index) => {
           item._id = savedBnbs[index]._id.toString();
         });
-        //console.log(testBnbs)
       });
       describe('POST /', () => {
         it('should send 401 without a token', async () => {
@@ -192,13 +197,44 @@ describe("/bnbs", () => {
           expect(res.statusCode).toEqual(400);
         });
         
-        it("should delete the expected bnb item", async () => {
-          const myUsers = await User.find();
-          console.log(myUsers)
+        it("should send 200 to normal user and delete his own record", async () => {
           const { _id } = testBnbs2[0];
           const res = await request(server)
             .delete("/bnbs/" + _id)
             .set('Authorization', 'Bearer ' + token0)
+            .send({});
+          expect(res.statusCode).toEqual(200);
+          const storedBndItem = await Item.findOne({ _id });
+          expect(storedBndItem).toBeNull();
+        });
+
+        it("should send 403 to normal user and not delete other users records", async () => {
+          const { _id } = testBnbs2[1];
+          const res = await request(server)
+            .delete("/bnbs/" + _id)
+            .set('Authorization', 'Bearer ' + token0)
+            .send({});
+          expect(res.statusCode).toEqual(403);
+          const storedBndItem = await Item.findOne({ _id });
+          expect(storedBndItem).toMatchObject(item3);
+        });
+
+        it("should send 200 to admin user and delete his own record", async () => {
+          const { _id } = testBnbs2[1];
+          const res = await request(server)
+            .delete("/bnbs/" + _id)
+            .set('Authorization', 'Bearer ' + adminToken)
+            .send({});
+          expect(res.statusCode).toEqual(200);
+          const storedBndItem = await Item.findOne({ _id });
+          expect(storedBndItem).toBeNull();
+        });
+
+        it("should send 200 to admin user and delete other users records", async () => {
+          const { _id } = testBnbs2[0];
+          const res = await request(server)
+            .delete("/bnbs/" + _id)
+            .set('Authorization', 'Bearer ' + adminToken)
             .send({});
           expect(res.statusCode).toEqual(200);
           const storedBndItem = await Item.findOne({ _id });
