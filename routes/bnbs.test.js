@@ -144,16 +144,17 @@ describe("/bnbs", () => {
         password: 'user234'
       };
       let token0;
-      let token1;
+      let adminToken;
       beforeEach(async () => {
         await request(server).post("/login/signup").send(user0);
         const res0 = await request(server).post("/login").send(user0);
         token0 = res0.body.token;
         const user0TokenRecord = await Token.findOne({ token: token0 }).lean();
         await request(server).post("/login/signup").send(user1);
+        await User.updateOne({ email: user1.email }, { $push: { roles: 'admin'} });
         const res1 = await request(server).post("/login").send(user1);
-        token1 = res1.body.token;
-        const user1TokenRecord = await Token.findOne({ token: token1 }).lean();
+        adminToken = res1.body.token;
+        const user1TokenRecord = await Token.findOne({ token: adminToken }).lean();
         testBnbs2[0].userId = user0TokenRecord.userId.toString();
         testBnbs2[1].userId = user1TokenRecord.userId.toString();
         const savedBnbs2 = await Item.insertMany(testBnbs2);
@@ -192,6 +193,8 @@ describe("/bnbs", () => {
         });
         
         it("should delete the expected bnb item", async () => {
+          const myUsers = await User.find();
+          console.log(myUsers)
           const { _id } = testBnbs2[0];
           const res = await request(server)
             .delete("/bnbs/" + _id)

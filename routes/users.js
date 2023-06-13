@@ -12,7 +12,7 @@ router.post("/signup", async (req, res, next) => {
             const user = {
                 email: req.body.email,
                 password: hashedPassword,
-                roles: ['user', 'admin']
+                roles: ['user']
             };
             const savedUser = await userDAO.createUser(user, user.email)
             if (savedUser === 'exists') {
