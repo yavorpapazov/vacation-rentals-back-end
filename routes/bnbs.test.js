@@ -94,6 +94,7 @@ describe("/bnbs", () => {
           const res = await request(server).post("/bnbs").send(item);
           expect(res.statusCode).toEqual(401);
         });
+        
         it('should send 401 with a bad token', async () => {
           const res = await request(server)
             .post("/bnbs")
@@ -131,6 +132,7 @@ describe("/bnbs", () => {
           const res = await request(server).get("/bnbs/123");
           expect(res.statusCode).toEqual(404);
         });
+
         it.each(testBnbs)("should find a single bnb item and return 200", async (item) => {
           const res = await request(server).get("/bnbs/" + item._id);
           expect(res.statusCode).toEqual(200);
@@ -175,8 +177,9 @@ describe("/bnbs", () => {
             .set('Authorization', 'Bearer ' + token0)
             .send(item2);
           expect(res.statusCode).toEqual(200);
-          expect(res.body).toMatchObject(item2)
+          expect(res.body).toMatchObject(item2);
         });
+
         it('should store bnb item with userId', async () => {
           await request(server)
             .post("/bnbs")
