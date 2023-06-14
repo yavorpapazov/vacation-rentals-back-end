@@ -135,23 +135,23 @@ describe("/cart", () => {
         it("should return all cart items for user currently logged in with token0", async () => {
           const id0 = testBnbs2[0]._id;
           const id1 = testBnbs2[1]._id;
+          const user0TokenRecord = await Token.findOne({ token: token0 }).lean();
           await request(server)
             .post("/cart")
             .set('Authorization', 'Bearer ' + token0)
             .send({ itemId: id0 });
           await request(server)
             .post("/cart")
-            .set('Authorization', 'Bearer ' + adminToken)
+            .set('Authorization', 'Bearer ' + token0)
             .send({ itemId: id1 });
-        //   const myCart = await CartItem.find();
-        //   console.log(myCart)
           const res = await request(server)
             .get("/cart")
-            .set('Authorization', 'Bearer ' + token0);
-        //   console.log(res.body[0])
-        //   console.log(testBnbs2[0])
+            .set('Authorization', 'Bearer ' + token0); 
           expect(res.statusCode).toEqual(200);
-        //   expect(res.body[0]).toMatchObject(testBnbs2[0]);
+          testBnbs2.forEach((item, index) => {
+            expect(res.body[index].addedToCart).toEqual(user0TokenRecord.userId.toString())
+            expect(res.body[index].bnbId).toEqual(item._id)
+          });
         });
       });
     });
