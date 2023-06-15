@@ -29,19 +29,25 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    try {
-        const itemId = req.body.itemId
-        const item = await itemDAO.getByIdProject(itemId)
-        const cartItem = {...item, addedToCart: req.userId}
-        const result = await cartItemDAO.createItem(cartItem)
-        if (result) {
-            res.json(result)
-        } else {
-            res.sendStatus(401)
+    const itemId = req.body.itemId
+    const duplicateItem = await cartItemDAO.getDuplicateItem(itemId, req.userId)
+    if (duplicateItem) {
+        res.status(409).send('Item is already in your cart.')
+    } else {
+        try {
+            const item = await itemDAO.getByIdProject(itemId)
+            const cartItem = {...item, addedToCart: req.userId}
+            const result = await cartItemDAO.createItem(cartItem)
+            if (result) {
+                res.json(result)
+            } else {
+                res.sendStatus(401)
+            }
+        } catch(e) {
+            res.status(500).send(e.message)
         }
-    } catch(e) {
-        res.status(500).send(e.message)
     }
+    
 })
 
 router.delete('/:id', async (req, res) => {

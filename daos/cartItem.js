@@ -21,6 +21,11 @@ async function getByBnbId(bnbId) {
     return bnb
 }
 
+async function getDuplicateItem(bnbId, userId) {
+    const bnb = await CartItem.findOne({ bnbId, addedToCart: userId }).lean()
+    return bnb
+}
+
 async function createItem(newItem) {
     const bnb = await CartItem.create(newItem)
     return bnb
@@ -31,4 +36,4 @@ async function deleteItem(itemId) {
     return bnb
 }
 
-module.exports = { getAll, getById, getByBnbId, createItem, deleteItem }
+module.exports = { getAll, getById, getByBnbId, getDuplicateItem, createItem, deleteItem }
