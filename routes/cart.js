@@ -45,12 +45,17 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/:id', async (req, res) => {
-    try {
-        const result = await cartItemDAO.deleteItem(req.params.id)
-        res.json(result)
-    } catch(e) {
-        res.status(500).send(e.message)
-    }  
+    const item = await cartItemDAO.getById(req.params.id)
+    if (!item) {
+        res.sendStatus(400)
+    } else {
+        try {
+            const result = await cartItemDAO.deleteItem(req.params.id)
+            res.json(result)
+        } catch(e) {
+            res.status(500).send(e.message)
+        }
+    }
 })
 
 module.exports = router

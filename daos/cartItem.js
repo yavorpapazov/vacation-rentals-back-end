@@ -1,4 +1,5 @@
 const CartItem = require('../models/cartItem')
+const mongoose = require('mongoose')
 
 module.exports = {}
 
@@ -7,8 +8,16 @@ async function getAll(userId) {
     return allBnbs
 }
 
-async function getById(bnbId) {
-    const bnb = (await CartItem.find({ bnbId }).lean())[0]
+async function getById(itemId) {
+    if (!mongoose.Types.ObjectId.isValid(itemId)) {
+        return null
+    }
+    const bnb = await CartItem.findOne({ _id: itemId }).lean()
+    return bnb
+}
+
+async function getByBnbId(bnbId) {
+    const bnb = await CartItem.findOne({ bnbId }).lean()
     return bnb
 }
 
@@ -22,4 +31,4 @@ async function deleteItem(itemId) {
     return bnb
 }
 
-module.exports = { getAll, getById, createItem, deleteItem }
+module.exports = { getAll, getById, getByBnbId, createItem, deleteItem }

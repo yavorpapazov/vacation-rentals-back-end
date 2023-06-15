@@ -13,13 +13,6 @@ describe("/cart", () => {
     afterAll(testUtils.stopDB);
     afterEach(testUtils.clearDB);
 
-    const item = {
-        bnbCity: 'Cozumel',
-        bnbCost: 120,
-        bnbCountry: 'Mexico',
-        bnbTitle: 'Vacation MX',
-        stars: 4.5
-    }
     const item2 = {
         bnbCity: 'Denver',
         bnbCost: 141,
@@ -27,39 +20,6 @@ describe("/cart", () => {
         bnbTitle: 'Vacation US',
         stars: 4.5
     }
-    const item3 = {
-      bnbCity: 'Yellowstone',
-      bnbCost: 111,
-      bnbCountry: 'USA',
-      bnbTitle: 'Vacation US',
-      stars: 4.5
-    }
-    const testUsers = [
-      {
-        email: 'user1@yahoo.com',
-        password: 'user123'
-      },
-      {
-        email: 'user2@yahoo.com',
-        password: 'user234'
-      }
-    ]
-    const testBnbs = [
-      {
-        bnbCity: 'Rainier',
-        bnbCost: 141,
-        bnbCountry: 'USA',
-        bnbTitle: 'Vacation US',
-        stars: 4.5
-      },
-      {
-        bnbCity: 'NY',
-        bnbCost: 111,
-        bnbCountry: 'USA',
-        bnbTitle: 'Vacation US',
-        stars: 4.5
-      }
-    ]
     const testBnbs2 = [
       {
         bnbCity: 'Denver',
@@ -76,7 +36,6 @@ describe("/cart", () => {
         stars: 4.5
       }
     ]
-    
     describe('after login', () => {
       const user0 = {
         email: 'user1@yahoo.com',
@@ -93,13 +52,11 @@ describe("/cart", () => {
         const res0 = await request(server).post("/login").send(user0);
         token0 = res0.body.token;
         const user0TokenRecord = await Token.findOne({ token: token0 }).lean();
-        //console.log(user0TokenRecord)
         await request(server).post("/login/signup").send(user1);
         await User.updateOne({ email: user1.email }, { $push: { roles: 'admin'} });
         const res1 = await request(server).post("/login").send(user1);
         adminToken = res1.body.token;
         const user1TokenRecord = await Token.findOne({ token: adminToken }).lean();
-        //console.log(user1TokenRecord)
         testBnbs2[0].userId = user0TokenRecord.userId.toString();
         testBnbs2[1].userId = user1TokenRecord.userId.toString();
         const savedBnbs2 = await Item.insertMany(testBnbs2);
@@ -152,6 +109,32 @@ describe("/cart", () => {
             expect(res.body[index].addedToCart).toEqual(user0TokenRecord.userId.toString())
             expect(res.body[index].bnbId).toEqual(item._id)
           });
+        });
+      });
+
+      describe("DELETE /:id", () => {
+        it("should reject a bad id", async () => {
+          const res = await request(server)
+            .delete("/cart/fake")
+            .set('Authorization', 'Bearer ' + token0)
+            .send();
+          expect(res.statusCode).toEqual(400);
+        });
+        
+        it("should send 200 and remove record from cart", async () => {
+          const bnbId = testBnbs2[0]._id;
+          const res1 = await request(server)
+            .post("/cart")
+            .set('Authorization', 'Bearer ' + token0)
+            .send({ itemId: bnbId });
+          const id = res1.body._id
+          const res2 = await request(server)
+            .delete("/cart/" + id)
+            .set('Authorization', 'Bearer ' + token0)
+            .send({});
+          expect(res2.statusCode).toEqual(200);
+          const storedCartItem = await CartItem.findOne({ _id: id });
+          expect(storedCartItem).toBeNull();
         });
       });
     });

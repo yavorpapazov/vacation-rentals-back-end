@@ -77,11 +77,11 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     const item = await itemDAO.getById(req.params.id)
     if (!item) {
-        res.sendStatus(400);
+        res.sendStatus(400)
     } else {
         try {
             if (req.userData._id.toString() === item.userId.toString()) {
-                const bnb = await cartItemDAO.getById(req.params.id)
+                const bnb = await cartItemDAO.getByBnbId(req.params.id)
                 if (bnb) {
                     res.send('Please remove item from cart.')
                 } else {
@@ -89,7 +89,7 @@ router.delete('/:id', async (req, res) => {
                     res.json(result)
                 }
             } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
-                const bnb = await cartItemDAO.getById(req.params.id)
+                const bnb = await cartItemDAO.getByBnbId(req.params.id)
                 if (bnb) {
                     res.send('Please remove item from cart.')
                 } else {
