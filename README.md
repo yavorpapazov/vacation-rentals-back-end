@@ -72,3 +72,11 @@ Cart
 -	Item – fields: city, cost, country, image, title, stars and userId
 -	CartItem – fields: addedToCart, city, cost, country, bnbId, image, title, stars and userId
 -	Token – fields: token and userId
+
+## What I learned and what I would like to improve upon
+
+I learned what the structure of an Express back-end application is in general, how to define routes and implement different CRUD functionalities. I learned how to use MongoDB and how to integrate my project with it. I’ve implemented some of the more advanced MongoDB features like indexes, aggregation and text search. I’ve had the opportunity to understand the concept of middleware and use it for authentication in my project.
+
+I would like to complete my React front-end application, integrate it with this back-end project, in order to have a finished full-stack project.
+
+During this course I saw the importance of writing and implementing test plans. This is something I would like to improve upon and gain more experience with.
