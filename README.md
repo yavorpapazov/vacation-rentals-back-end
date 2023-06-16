@@ -79,4 +79,4 @@ I learned what the structure of an Express back-end application is in general, h
 
 I would like to complete my React front-end application, integrate it with this back-end project, in order to have a finished full-stack project.
 
-During this course I saw the importance of writing and implementing test plans. This is something I would like to improve upon and gain more experience with.
+During this course I saw the importance of writing and implementing test plans. This is something I would like to improve upon and gain more experience with. As far as this final project, the test coverage is 89%.
