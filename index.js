@@ -1,9 +1,9 @@
-let server = require('./server')
-let connectDB = require('./db/connect')
+const server = require('./server')
+const connectDB = require('./db/connect')
 
-let port = 5000
+const port = 5000
 
-let start = async () => {
+const start = async () => {
     try {
         await connectDB()
         server.listen(port, () => {
