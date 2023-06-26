@@ -40,7 +40,8 @@ router.use(async function (req, res, next) {
     if (!req.headers.authorization) {
         res.sendStatus(401)
     } else {
-        const tokenString = req.headers.authorization.slice(7)
+        //const tokenString = req.headers.authorization.slice(7)
+        const tokenString = req.headers.authorization
         const userId = await userDAO.getUserIdFromToken(tokenString)
         const userData = await userDAO.getUserById(userId)
         if (userId) {
@@ -58,7 +59,7 @@ router.post('/', async (req, res) => {
             bnbCity: req.body.bnbCity,
             bnbCost: req.body.bnbCost,
             bnbCountry: req.body.bnbCountry,
-            //bnbImage: req.body.bnbImage,
+            bnbImage: req.body.bnbImage,
             bnbTitle: req.body.bnbTitle,
             stars: req.body.stars,
             userId: req.userData._id
