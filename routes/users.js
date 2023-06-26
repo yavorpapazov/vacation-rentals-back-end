@@ -37,7 +37,7 @@ router.post("/", async (req, res, next) => {
                 res.status(401).send("password doesn't match")
             } else {
                 const userToken = await userDAO.makeTokenForUserId(user._id)
-                res.json({ token: userToken })
+                res.json({ token: userToken, userEmail: user.email })
             }
         } catch(e) {
             res.status(401).send(e.message)
@@ -49,7 +49,8 @@ router.use(async function (req, res, next) {
     if (!req.headers.authorization) {
         res.sendStatus(401)
     } else {
-        const tokenString = req.headers.authorization.slice(7)
+        //const tokenString = req.headers.authorization.slice(7)
+        const tokenString = req.headers.authorization
         const userId = await userDAO.getUserIdFromToken(tokenString)
         if (userId) {
             req.userId = userId
@@ -65,7 +66,8 @@ router.post("/logout", async (req, res, next) => {
         res.status(401).send("token doesn't match")
     } else {
         try {
-            const tokenString = req.headers.authorization.slice(7)
+            //const tokenString = req.headers.authorization.slice(7)
+            const tokenString = req.headers.authorization
             const success = await userDAO.removeToken(tokenString)
             res.sendStatus(success ? 200 : 401)
         } catch(e) {

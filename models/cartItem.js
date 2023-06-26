@@ -6,7 +6,7 @@ const cartItemSchema = new mongoose.Schema({
     bnbCost: { type: Number, required: true},
     bnbCountry: { type: String, required: true },
     bnbId: { type: mongoose.Schema.Types.ObjectId, required: true },
-    //bnbImage: { type: String, required: true },
+    bnbImage: { type: String, required: true },
     bnbTitle: { type: String, required: true },
     stars: { type: Number, required: true},
     userId: { type: mongoose.Schema.Types.ObjectId, required: true }
