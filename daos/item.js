@@ -29,7 +29,7 @@ async function getById(itemId) {
 async function getByIdProject(itemId) {
     const bnb = (await Item.aggregate([
         { $match: { _id: new mongoose.Types.ObjectId(itemId) } },
-        { $project: { _id: 0, bnbId: "$_id", bnbCity: 1, bnbCost: 1, bnbCountry: 1, bnbTitle: 1, stars: 1, userId: 1 } }
+        { $project: { _id: 0, bnbId: "$_id", bnbCity: 1, bnbCost: 1, bnbCountry: 1, bnbImage: 1, bnbTitle: 1, stars: 1, userId: 1 } }
     ]))[0]
     return bnb
 }
