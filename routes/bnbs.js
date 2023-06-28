@@ -40,7 +40,6 @@ router.use(async function (req, res, next) {
     if (!req.headers.authorization) {
         res.sendStatus(401)
     } else {
-        //const tokenString = req.headers.authorization.slice(7)
         const tokenString = req.headers.authorization
         const userId = await userDAO.getUserIdFromToken(tokenString)
         const userData = await userDAO.getUserById(userId)
