@@ -32,14 +32,14 @@ router.post('/', async (req, res) => {
     const itemId = req.body.itemId
     const duplicateItem = await cartItemDAO.getDuplicateItem(itemId, req.userId)
     if (duplicateItem) {
-        res.status(409).send('Item is already in your cart.')
+        res.status(409).send({ message: 'Item is already in your cart' })
     } else {
         try {
             const item = await itemDAO.getByIdProject(itemId)
             const cartItem = {...item, addedToCart: req.userId}
             const result = await cartItemDAO.createItem(cartItem)
             if (result) {
-                res.json(result)
+                res.json({ resultCart: result, message: 'Item added to cart' })
             } else {
                 res.sendStatus(401)
             }
