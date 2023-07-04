@@ -16,9 +16,9 @@ router.post("/signup", async (req, res, next) => {
             };
             const savedUser = await userDAO.createUser(user, user.email)
             if (savedUser === 'exists') {
-                res.status(409).send('email already exists')
+                res.status(409).send({ message: 'Email already exists' })
             } else {
-                res.json(savedUser)
+                res.json({ user: savedUser, message: 'User created successfully' })
             }
         } catch(e) {
             res.status(500).send(e.message)
@@ -32,12 +32,15 @@ router.post("/", async (req, res, next) => {
     } else {
         try {
             const user = await userDAO.getUser(req.body.email)
+            if (!user) {
+                return res.status(400).send({ message: "User doesn't exist" })
+            }
             const result = await bcrypt.compare(req.body.password, user.password)
             if (!result) {
-                res.status(401).send("password doesn't match")
+                res.status(401).send({ message: "Password doesn't match" })
             } else {
                 const userToken = await userDAO.makeTokenForUserId(user._id)
-                res.json({ token: userToken, userEmail: user.email })
+                res.json({ token: userToken, userEmail: user.email, message: 'User logged in successfully' })
             }
         } catch(e) {
             res.status(401).send(e.message)

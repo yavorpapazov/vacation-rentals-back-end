@@ -83,21 +83,21 @@ router.delete('/:id', async (req, res) => {
             if (req.userData._id.toString() === item.userId.toString()) {
                 const bnb = await cartItemDAO.getByBnbId(req.params.id)
                 if (bnb) {
-                    res.status(409).send('Please remove item from cart.')
+                    res.status(409).send({ message: 'Please remove item from cart' })
                 } else {
                     const result = await itemDAO.deleteItem(req.params.id)
-                    res.json(result)
+                    res.json({ resultDelete: result, message: 'Item removed' })
                 }
             } else if (req.userData._id.toString() !== item.userId.toString() && req.userData.roles.includes('admin')) {
                 const bnb = await cartItemDAO.getByBnbId(req.params.id)
                 if (bnb) {
-                    res.status(409).send('Please remove item from cart.')
+                    res.status(409).send({ message: 'Please remove item from cart' })
                 } else {
                     const result = await itemDAO.deleteItem(req.params.id)
-                    res.json(result)
+                    res.json({ resultDelete: result, message: 'Item removed' })
                 }
             } else {
-                res.sendStatus(403)
+                res.status(403).send({ message: 'Forbidden' })
             }
         } catch(e) {
             res.status(500).send(e.message)
